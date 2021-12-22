@@ -35,6 +35,7 @@ export class ClassValidatorTranslatorMiddleware {
                 this.#messages,
                 this.#targetLocale,
             );
+            next();
         } else {
             next();
         }
