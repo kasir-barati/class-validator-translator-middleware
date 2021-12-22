@@ -4,7 +4,7 @@
     "description": "A middleware to convert class-validator messages to locale languages using similar i18n pattern",
     "main": "dist/index.js",
     "scripts": {
-        "build": "rimraf ./build && tsc",
+        "build": "rimraf ./dist && tsc",
         "start:dev": "nodemon",
         "format": "prettier --write '**/*.js' '**/*.ts' '**/*.json'",
         "test": "jest"
