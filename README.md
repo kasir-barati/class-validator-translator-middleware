@@ -43,8 +43,14 @@ app.use((error, req, res, next) => {
 });
 ```
 
-### Note:
+### Notes
 
 -   I had no time to add all the languages in the Locale
 -   Please use it with Typescript to prevent any unexpected behaviours
 -   Feel free to create issue or pull request
+
+## Contribution
+
+-   Write you code
+-   Write its tests in tests directory
+-   run `npm test` and make sure it works perfectly
