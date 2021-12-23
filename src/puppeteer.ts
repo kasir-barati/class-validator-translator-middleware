@@ -1,4 +1,5 @@
 import Puppeteer from 'puppeteer';
+import { promises as fs } from 'fs';
 import { join } from 'path';
 
 function fakeAsync(millisecond: number) {
@@ -10,19 +11,40 @@ function fakeAsync(millisecond: number) {
 async function start() {
     try {
         const browser = await Puppeteer.launch();
+        // Do not work
+        // const browser = await Puppeteer.launch({
+        //     headless: false,
+        //     defaultViewport: {
+        //         width: 600,
+        //         height: 600,
+        //     },
+        // });
         const page = await browser.newPage();
 
         await page.goto('https://translate.google.com/');
+        await page.setBypassCSP(true);
+
         // Do not work
-        /* const jqueryFilePath = join(
-            __dirname,
-            '..',
-            'lib',
-            'jquery-3.6.0.slim.min.js',
-        );
-        await page.addScriptTag({
-            path: jqueryFilePath,
-        }); */
+        // const jqueryFilePath = join(
+        //     __dirname,
+        //     '..',
+        //     'lib',
+        //     'jquery-3.6.0.slim.min.js',
+        // );
+        // await page.addScriptTag({
+        //     path: jqueryFilePath,
+        // });
+
+        // Do not work
+        // const jqueryFilePath = join(
+        //     __dirname,
+        //     '..',
+        //     'lib',
+        //     'jquery-3.6.0.slim.min.js',
+        // );
+        // await page.addScriptTag({
+        //     content: await fs.readFile(jqueryFilePath, 'utf-8'),
+        // });
 
         // Do not work
         /* await page.addScriptTag({
