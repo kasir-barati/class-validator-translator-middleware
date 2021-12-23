@@ -27,7 +27,7 @@ export class ClassValidatorTranslatorMiddleware {
                         !(error instanceof ValidationError),
                 ).length > 0
             ) {
-                next();
+                next(error);
             }
 
             error.errors = translateErrors(
@@ -35,9 +35,9 @@ export class ClassValidatorTranslatorMiddleware {
                 this.#messages,
                 this.#targetLocale,
             );
-            next();
+            next(error);
         } else {
-            next();
+            next(error);
         }
     }
 }
