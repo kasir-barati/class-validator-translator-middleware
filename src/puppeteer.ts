@@ -1,6 +1,4 @@
 import Puppeteer from 'puppeteer';
-import { promises as fs } from 'fs';
-import { join } from 'path';
 
 function fakeAsync(millisecond: number) {
     return new Promise((resolve, reject) => {
@@ -11,48 +9,12 @@ function fakeAsync(millisecond: number) {
 async function start() {
     try {
         const browser = await Puppeteer.launch();
-        // Do not work
-        // const browser = await Puppeteer.launch({
-        //     headless: false,
-        //     defaultViewport: {
-        //         width: 600,
-        //         height: 600,
-        //     },
-        // });
         const page = await browser.newPage();
 
         await page.goto('https://translate.google.com/');
-        await page.setBypassCSP(true);
-
-        // Do not work
-        // const jqueryFilePath = join(
-        //     __dirname,
-        //     '..',
-        //     'lib',
-        //     'jquery-3.6.0.slim.min.js',
-        // );
-        // await page.addScriptTag({
-        //     path: jqueryFilePath,
-        // });
-
-        // Do not work
-        // const jqueryFilePath = join(
-        //     __dirname,
-        //     '..',
-        //     'lib',
-        //     'jquery-3.6.0.slim.min.js',
-        // );
-        // await page.addScriptTag({
-        //     content: await fs.readFile(jqueryFilePath, 'utf-8'),
-        // });
-
-        // Do not work
-        /* await page.addScriptTag({
-            url: 'https://code.jquery.com/jquery-3.2.1.min.js',
-        }); */
 
         const cookieAcceptBtn = await page.$(
-            'window.jQuery(\'button:contains("I agree")\')',
+            'button[aria-label="Agree to the use of cookies and other data for the purposes described"]',
         );
 
         if (!cookieAcceptBtn) {
@@ -61,9 +23,28 @@ async function start() {
             );
         }
         await cookieAcceptBtn.click();
+
+        await page.evaluate(() => {
+            let sourceContentDivs = document.querySelectorAll(
+                'div[jsController="gWGePc"]',
+            );
+
+            for (const sourceContentDiv of sourceContentDivs) {
+                sourceContentDiv.innerHTML = 'change to something';
+            }
+        });
+
+        await page.waitForSelector('span[jsname="W297wb"]');
+        const targetContent = await page.$('span[jsname="W297wb"]');
+        const targetContentValue = await page.evaluate(
+            (element) => element.textContent,
+            targetContent,
+        );
+        console.log(targetContentValue);
+
         await fakeAsync(2000 + Math.random() * 832);
-        await browser.close();
         await page.screenshot({ path: 'amazing.png' });
+        await browser.close();
     } catch (error) {
         console.dir(error, { depth: null });
         process.exit(1);
