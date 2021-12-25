@@ -17,6 +17,8 @@ You can simply install it and then use it.
             ClassValidatorTranslatorMiddleware,
         } from 'class-validator-translator-middleware';
 
+        // If one message does not exists class-validator-translator-middleware will translate it
+        // with google translator
         const sampleMessages: Messages = {
             [Locale.en]: {
                 title_should_be_sample: 'sample is good',
