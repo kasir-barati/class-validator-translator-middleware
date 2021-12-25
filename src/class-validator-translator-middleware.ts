@@ -14,7 +14,7 @@ export class ClassValidatorTranslatorMiddleware {
         this.#targetLocale = targetLocale;
     }
 
-    middleware(
+    async middleware(
         error: any,
         req: Request,
         res: Response,
@@ -30,7 +30,7 @@ export class ClassValidatorTranslatorMiddleware {
                 next(error);
             }
 
-            error.errors = translateErrors(
+            error.errors = await translateErrors(
                 error.errors,
                 this.#messages,
                 this.#targetLocale,
