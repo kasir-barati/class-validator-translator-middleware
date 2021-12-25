@@ -32,17 +32,23 @@ export async function translateErrors(
                     messages[targetLocale]!
                 )
             ) {
-                const translatedMessage = await translate(
-                    Object.values(error.constraints!)[0],
-                    {
-                        to: targetLocale,
-                    },
-                );
-                _.update(
-                    error,
-                    'constraints',
-                    (value) => translatedMessage.text,
-                );
+                try {
+                    const translatedMessage = await translate(
+                        Object.values(error.constraints!)[0],
+                        {
+                            to: targetLocale,
+                        },
+                    );
+                    _.update(
+                        error,
+                        'constraints',
+                        (value) => translatedMessage.text,
+                    );
+                } catch (error) {
+                    console.dir(error, { depth: null });
+                } finally {
+                    continue;
+                }
             } else {
                 _.update(
                     error,
