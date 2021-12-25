@@ -21,9 +21,9 @@ class TestClassValidator {
 
 const testClassValidator = new TestClassValidator();
 
-test('tranlation should be done for persian for one error', async () => {
+test('Translation should be done for persian for one error', async () => {
     const errors = await validate(testClassValidator);
-    const translatedErrors = translateErrors(
+    const translatedErrors = await translateErrors(
         errors,
         sampleMessages,
         Locale.fa,
