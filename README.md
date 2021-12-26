@@ -1,80 +1,87 @@
 # class-validator-translator-middleware
 
-You can simply install it and then use it.
-
 ## How to use this package
 
 -   first install it `npm i class-validator-translator-middleware`
--   Examples:
+-   Now create a directory wherever you want and name it what ever you like but I use translated-errors: `mkdir src/translated-errors`
+-   Then you should create `error-codes.json` in that directory: `touch src/translated-errors/error-codes.json`
+-   Now in it you have to define your error codes like this.
+    ```json
+    {
+        "title_should_be_sample": "title_should_be_sample"
+    }
+    ```
+-   Now you must define your error locale messages in separated files on that directory. E.X. you should `touch src/translated-errors/en.json` and in that file you have:
+
+    ```json
+    {
+        "title_should_be_sample": "sample is good"
+    }
+    ```
+
+    And Also `touch src/translated-errors/fa.json`:
+
+    ```json
+    {
+        "title_should_be_sample": "تست خوبه"
+    }
+    ```
+
+    **Important note: You cannot define an error code in `error-codes.json` but it had no defined error message in your error locale messages.**
+
+    **Since I am reading the error messages using require, they will be cached in the memory and this will prevent unnecessary reads from file system. for more info please read `ClassValidatorTranslatorMiddleware` codes** :star_struck:
+
+-   Your frontend have to specify the `accept-language` header in their requests and it should be within the `Locale` enum.
+-   Final examples:
 
     -   Here is one example in ExpressJS:
 
-        ```ts
-        import {
-            translateErrors,
-            Locale,
-            Messages,
-            ClassValidatorTranslatorMiddleware,
-        } from 'class-validator-translator-middleware';
+            ```ts
+            // app.ts
+            import { join } from 'path';
+            import { Equals, IsOptional } from 'class-validator';
+            import {
+                translateErrors,
+                Locale,
+                Messages,
+                ClassValidatorTranslatorMiddleware,
+            } from 'class-validator-translator-middleware';
 
-        const sampleMessages: Messages = {
-            [Locale.en]: {
-                title_should_be_sample: 'sample is good',
-            },
-            [Locale.fa]: {
-                title_should_be_sample: 'تست خوبه',
-            },
-        };
-        const classValidatorTranslatorMiddleware =
-            new ClassValidatorTranslatorMiddleware(
-                sampleMessages,
-                Locale.fa,
-            );
+            const messagesPath = join(__dirname, 'translated-errors');
 
-        app.use(classValidatorTranslatorMiddleware.middleware);
+            const classValidatorTranslatorMiddleware =
+                new ClassValidatorTranslatorMiddleware(messagesPath);
 
-        // this can be your class validator
-        class TestClassValidator {
-            @IsOptional()
-            @Equals('sample', { message: 'title_should_be_sample' })
-            title: string = 'bad_value';
-        }
+            app.use(classValidatorTranslatorMiddleware.middleware);
 
-        app.use((error, req, res, next) => {
-            for (const error of errors) {
-                console.log(error.constraints); // تست خوبه
+            // this can be your class validator
+            class TestClassValidator {
+                @IsOptional()
+                @Equals('sample', { message: 'title_should_be_sample' })
+                title: string = 'bad_value';
             }
-        });
-        ```
+
+            app.use((error, req, res, next) => {
+                for (const error of errors) {
+                    console.log(error.constraints); // تست خوبه
+                }
+            });
+            ```
 
     -   Here is one example in routing controller
 
         ```ts
         // messages.ts
-
         import {
             Locale,
             Messages,
         } from 'class-validator-translator-middleware';
 
-        export const classValidatorMessages: Messages = {
-            [Locale.en]: {
-                serviced_should_be_boolean_not_empty:
-                    'serviced should be boolean, not empty string',
-            },
-            [Locale.fa]: {
-                serviced_should_be_boolean_not_empty:
-                    'لطفا فیلتر شهر های تحت پوشش را خالی وارد نکنید',
-            },
-        };
-
         // city-filter.ts
         import {
             IsBoolean,
             IsAlpha,
-            IsNotEmpty,
             IsOptional,
-            IsString,
         } from 'class-validator';
 
         export class CityFilterQuery {
@@ -87,6 +94,7 @@ You can simply install it and then use it.
         }
 
         // class-validator-error-translator.middleware.ts
+        import { join } from 'path';
         import { ValidationError } from 'class-validator';
         import {
             Middleware,
@@ -99,13 +107,10 @@ You can simply install it and then use it.
             Locale,
         } from 'class-validator-translator-middleware';
 
-        import { classValidatorMessages } from '../contracts/models/class-validator-messages.mode';
+        const messagesPath = join(__dirname, 'translated-errors');
 
         const classValidatorTranslatorMiddleware =
-            new ClassValidatorTranslatorMiddleware(
-                classValidatorMessages,
-                Locale.fa,
-            );
+            new ClassValidatorTranslatorMiddleware(messagesPath);
 
         class CustomValidationError {
             errors: ValidationError[];
