@@ -3,18 +3,14 @@ import _ from 'lodash';
 import translate from '@vitalets/google-translate-api';
 
 import { Locale } from './contracts/enums/locales.enum';
-import { Messages } from './contracts/types/messages.type';
 
 export async function translateErrors(
     errors: ValidationError[],
-    messages: Messages,
+    messages: { [x: string]: string },
     targetLocale: Locale,
 ): Promise<ValidationError[]> | never {
     if (Object.keys(messages).length === 0) {
         throw new Error('passed messages is an empty object');
-    }
-    if (!messages[targetLocale]) {
-        throw new Error('passed targetLocale is not in messages');
     }
 
     const tempErrors = _.cloneDeep(errors);
@@ -29,7 +25,7 @@ export async function translateErrors(
             if (
                 !(
                     `${Object.values(error.constraints!)[0]}` in
-                    messages[targetLocale]!
+                    messages
                 )
             ) {
                 try {
@@ -54,7 +50,7 @@ export async function translateErrors(
                     error,
                     'constraints',
                     (value) =>
-                        messages[targetLocale]![
+                        messages[
                             Object.values(error.constraints!)[0]
                         ],
                 );
