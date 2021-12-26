@@ -1,11 +1,11 @@
 {
     "name": "class-validator-translator-middleware",
-    "version": "0.0.7",
+    "version": "1.0.0",
     "description": "A middleware to convert class-validator messages to locale languages using similar i18n pattern",
     "main": "dist/index.js",
     "scripts": {
         "prepublish": "npm run build",
-        "build": "rimraf ./dist && tsc",
+        "build": "rimraf ./dist && tsc -p tsconfig.build.json",
         "start:dev": "nodemon",
         "format": "prettier --write '**/*.js' '**/*.ts' '**/*.json'",
         "test": "jest"
