@@ -36,18 +36,15 @@
 
     -   Here is one example in ExpressJS:
 
-            ```ts
-            // app.ts
-            import { join } from 'path';
-            import { Equals, IsOptional } from 'class-validator';
-            import {
-                translateErrors,
-                Locale,
-                Messages,
-                ClassValidatorTranslatorMiddleware,
-            } from 'class-validator-translator-middleware';
+        ````ts
+        // app.ts
+        import { join } from 'path';
+        import { Equals, IsOptional } from 'class-validator';
+        import { ClassValidatorTranslatorMiddleware } from 'class-validator-translator-middleware';
 
-            const messagesPath = join(__dirname, 'translated-errors');
+        const messagesPath = join(__dirname, 'translated-errors');
+        const classValidatorTranslatorMiddleware =
+            new ClassValidatorTranslatorMiddleware(messagesPath);
 
             const classValidatorTranslatorMiddleware =
                 new ClassValidatorTranslatorMiddleware(messagesPath);
@@ -68,14 +65,13 @@
             });
             ```
 
+        ````
+
     -   Here is one example in routing controller
 
         ```ts
         // messages.ts
-        import {
-            Locale,
-            Messages,
-        } from 'class-validator-translator-middleware';
+        import { ClassValidatorTranslatorMiddleware } from 'class-validator-translator-middleware';
 
         // city-filter.ts
         import {
@@ -102,13 +98,9 @@
             HttpError,
         } from 'routing-controllers';
         import { NextFunction, Request, Response } from 'express';
-        import {
-            ClassValidatorTranslatorMiddleware,
-            Locale,
-        } from 'class-validator-translator-middleware';
+        import { ClassValidatorTranslatorMiddleware } from 'class-validator-translator-middleware';
 
         const messagesPath = join(__dirname, 'translated-errors');
-
         const classValidatorTranslatorMiddleware =
             new ClassValidatorTranslatorMiddleware(messagesPath);
 
@@ -722,6 +714,9 @@
 
 ## Contribution
 
+-   Clone repository
+-   `npm i; npm i prepeare`
+-   Create a new branch from `develop` branch (`git checkout -b develop-your-name`)
 -   Write you code
 -   Write its tests in tests directory
 -   run `npm test` and make sure it works perfectly

@@ -8,7 +8,9 @@
         "build": "rimraf ./dist && tsc -p tsconfig.build.json",
         "start:dev": "nodemon",
         "format": "prettier --write '**/*.js' '**/*.ts' '**/*.json'",
-        "test": "jest"
+        "test": "jest",
+        "prepare": "husky install",
+        "lint": "eslint ."
     },
     "keywords": [
         "translate-errors",
@@ -25,7 +27,15 @@
         "@types/jest": "^27.0.3",
         "@types/lodash": "^4.14.178",
         "@types/node": "^17.0.2",
+        "@typescript-eslint/eslint-plugin": "^5.8.0",
+        "@typescript-eslint/parser": "^5.8.0",
         "babel-jest": "^27.4.5",
+        "eslint": "^8.5.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-import": "^2.25.3",
+        "eslint-plugin-prettier": "^4.0.0",
+        "husky": "^7.0.4",
         "jest": "^27.4.5",
         "nodemon": "^2.0.15",
         "prettier": "^2.5.1",
