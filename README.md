@@ -3,15 +3,15 @@
 ## How to use this package
 
 -   first install it `npm i class-validator-translator-middleware`
--   Now create a directory wherever you want and name it what ever you like but I use translated-errors: `mkdir src/translated-errors`
--   Then you should create `error-codes.json` in that directory: `touch src/translated-errors/error-codes.json`
+-   Now create a directory wherever you want and name it what ever you like but I use _class-validator-errors_: `mkdir src/class-validator-errors`
+-   Then you should create `error-codes.json` in that directory: `touch src/class-validator-errors/error-codes.json`
 -   Now in it you have to define your error codes like this.
     ```json
     {
         "title_should_be_sample": "title_should_be_sample"
     }
     ```
--   Now you must define your error locale messages in separated files on that directory. E.X. you should `touch src/translated-errors/en.json` and in that file you have:
+-   Now you must define your error locale messages in separated files on that directory. E.X. you should `touch src/class-validator-errors/en.json` and in that file you have:
 
     ```json
     {
@@ -19,7 +19,7 @@
     }
     ```
 
-    And Also `touch src/translated-errors/fa.json`:
+    And Also `touch src/class-validator-errors/fa.json`:
 
     ```json
     {
@@ -36,31 +36,36 @@
 
     -   Here is one example in ExpressJS:
 
-        ```ts
+        ````ts
         // app.ts
         import { join } from 'path';
         import { Equals, IsOptional } from 'class-validator';
         import { ClassValidatorTranslatorMiddleware } from 'class-validator-translator-middleware';
 
-        const messagesPath = join(__dirname, 'translated-errors');
+        const messagesPath = join(__dirname, 'class-validator-errors');
         const classValidatorTranslatorMiddleware =
             new ClassValidatorTranslatorMiddleware(messagesPath);
 
-        app.use(classValidatorTranslatorMiddleware.middleware);
+            const classValidatorTranslatorMiddleware =
+                new ClassValidatorTranslatorMiddleware(messagesPath);
 
-        // this can be your class validator
-        class TestClassValidator {
-            @IsOptional()
-            @Equals('sample', { message: 'title_should_be_sample' })
-            title: string = 'bad_value';
-        }
+            app.use(classValidatorTranslatorMiddleware.middleware);
 
-        app.use((error, req, res, next) => {
-            for (const error of errors) {
-                console.log(error.constraints); // تست خوبه
+            // this can be your class validator
+            class TestClassValidator {
+                @IsOptional()
+                @Equals('sample', { message: 'title_should_be_sample' })
+                title: string = 'bad_value';
             }
-        });
-        ```
+
+            app.use((error, req, res, next) => {
+                for (const error of errors) {
+                    console.log(error.constraints); // تست خوبه
+                }
+            });
+            ```
+
+        ````
 
     -   Here is one example in routing controller
 
@@ -95,7 +100,10 @@
         import { NextFunction, Request, Response } from 'express';
         import { ClassValidatorTranslatorMiddleware } from 'class-validator-translator-middleware';
 
-        const messagesPath = join(__dirname, 'translated-errors');
+        const messagesPath = join(
+            __dirname,
+            'class-validator-errors',
+        );
         const classValidatorTranslatorMiddleware =
             new ClassValidatorTranslatorMiddleware(messagesPath);
 
