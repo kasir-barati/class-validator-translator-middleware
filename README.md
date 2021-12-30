@@ -27,9 +27,11 @@
     }
     ```
 
-    **Important note: You cannot define an error code in `error-codes.json` but it had no defined error message in your error locale messages.**
+    **Important note: You cannot define an error code in `error-codes.json` but it had no defined error message in your error locale messages. If you do this intentionally or accidentally you will get an error while creating a new instance of `ClassValidatorTranslatorMiddleware`, The thrown error is instance of this error custom error class: `IncompatibleErrorCodeAndErrorMessage`.**
 
     **Since I am reading the error messages using require, they will be cached in the memory and this will prevent unnecessary reads from file system. for more info please read `ClassValidatorTranslatorMiddleware` codes** :star_struck:
+
+    **I client side sends an locale that you do not defined its error-message file in the `class-validator-errors` directory you will get An error in the next error handler middleware. In this case you will get an error that it is instance of `SpecifiedErrorMessageFileNotFound`.**
 
 -   Your frontend have to specify the `accept-language` header in their requests and it should be within the `Locale` enum.
 -   Final examples:
@@ -40,11 +42,22 @@
         // app.ts
         import { join } from 'path';
         import { Equals, IsOptional } from 'class-validator';
-        import { ClassValidatorTranslatorMiddleware } from 'class-validator-translator-middleware';
+        import {
+            ClassValidatorTranslatorMiddleware,
+            IncompatibleErrorCodeAndErrorMessage
+        } from 'class-validator-translator-middleware';
+
+        process.on('uncaughtException', (error) => {
+            if (error instanceof IncompatibleErrorCodeAndErrorMessage) {
+                // do what ever you like, like sending email/notification to your devops guy
+                process.exit(1);
+            }
+        })
 
         const messagesPath = join(__dirname, 'class-validator-errors');
         const classValidatorTranslatorMiddleware =
             new ClassValidatorTranslatorMiddleware(messagesPath);
+
 
             const classValidatorTranslatorMiddleware =
                 new ClassValidatorTranslatorMiddleware(messagesPath);
@@ -66,6 +79,10 @@
             ```
 
         ````
+
+        ```
+
+        ```
 
     -   Here is one example in routing controller
 
@@ -129,6 +146,38 @@
                     response,
                     next,
                 );
+            }
+        }
+
+        // another middleware
+        import { ValidationError } from 'class-validator';
+        import {
+            Middleware,
+            ExpressErrorMiddlewareInterface,
+            HttpError,
+        } from 'routing-controllers';
+        import { NextFunction, Request, Response } from 'express';
+        import { SpecifiedErrorMessageFileNotFound } from 'class-validator-translator-middleware';
+
+        @Middleware({ type: 'after' })
+        export class ClassValidatorErrorTranslator
+            implements ExpressErrorMiddlewareInterface
+        {
+            error(
+                error: HttpError | CustomValidationError,
+                request: Request,
+                response: Response,
+                next: NextFunction,
+            ): void {
+                if (
+                    error instanceof SpecifiedErrorMessageFileNotFound
+                ) {
+                    // do whatever you want.
+                    response.status(400).json({
+                        message: 'un-supported-language',
+                    });
+                }
+                next(error);
             }
         }
 

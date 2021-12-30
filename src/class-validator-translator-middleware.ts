@@ -4,6 +4,8 @@ import { Request, Response, NextFunction } from 'express';
 
 import { Locale } from './contracts/enums/locales.enum';
 import { translateErrors } from './translate-errors';
+import { SpecifiedErrorMessageFileNotFound } from './contracts/errors/specified-error-message-file-not-found.error';
+import { IncompatibleErrorCodeAndErrorMessage } from './contracts/errors/incompatible-error-code-and-error-message.error';
 
 export class ClassValidatorTranslatorMiddleware {
     #messagesDirectorPath: string;
@@ -36,16 +38,28 @@ export class ClassValidatorTranslatorMiddleware {
                 this.#messagesDirectorPath,
                 `${targetLocale}.json`,
             );
-            const messages: {
-                [x: string]: string;
-            } = require(targetLocalePath);
 
-            error.errors = await translateErrors(
-                error.errors,
-                messages,
-                targetLocale,
-            );
-            next(error);
+            try {
+                const messages: {
+                    [x: string]: string;
+                } = require(targetLocalePath);
+
+                error.errors = await translateErrors(
+                    error.errors,
+                    messages,
+                    targetLocale,
+                );
+                next(error);
+            } catch (error: any) {
+                if (error.code === 'MODULE_NOT_FOUND') {
+                    const errorMessageFileNotFound =
+                        new SpecifiedErrorMessageFileNotFound(
+                            targetLocale,
+                        );
+                    next(errorMessageFileNotFound);
+                }
+                next(error);
+            }
         } else {
             next(error);
         }
@@ -70,11 +84,12 @@ export class ClassValidatorTranslatorMiddleware {
 
                 for (const errorCode in errorCodes) {
                     if (!writtenLocale[errorCode]) {
-                        const error = new Error(
-                            `Defined error codes in this file ${errorCodesPath} has not this error code ${errorCode}, But it is in this locale error message ${path}`,
-                        );
-                        error.name =
-                            'incompatible_error_code_and_error_message';
+                        const error =
+                            new IncompatibleErrorCodeAndErrorMessage({
+                                errorCodesPath,
+                                errorCode,
+                                path,
+                            });
                         throw error;
                     }
                 }
@@ -82,8 +97,8 @@ export class ClassValidatorTranslatorMiddleware {
                 // To keep this function synchronized and also ignore the undefined locale files
                 // I did this trick to just jump on undefined locales
                 if (
-                    error.name ===
-                    'incompatible_error_code_and_error_message'
+                    error instanceof
+                    IncompatibleErrorCodeAndErrorMessage
                 ) {
                     throw error;
                 }
