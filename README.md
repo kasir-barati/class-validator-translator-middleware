@@ -59,20 +59,29 @@
             new ClassValidatorTranslatorMiddleware(messagesPath);
 
 
-        app.use(classValidatorTranslatorMiddleware.middleware);
+            const classValidatorTranslatorMiddleware =
+                new ClassValidatorTranslatorMiddleware(messagesPath);
 
-        // this can be your class validator
-        class TestClassValidator {
-            @IsOptional()
-            @Equals('sample', { message: 'title_should_be_sample' })
-            title: string = 'bad_value';
-        }
+            app.use(classValidatorTranslatorMiddleware.middleware);
 
-        app.use((error, req, res, next) => {
-            for (const error of errors) {
-                console.log(error.constraints); // تست خوبه
+            // this can be your class validator
+            class TestClassValidator {
+                @IsOptional()
+                @Equals('sample', { message: 'title_should_be_sample' })
+                title: string = 'bad_value';
             }
-        });
+
+            app.use((error, req, res, next) => {
+                for (const error of errors) {
+                    console.log(error.constraints); // تست خوبه
+                }
+            });
+            ```
+
+        ````
+
+        ```
+
         ```
 
         ````
