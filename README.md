@@ -31,6 +31,15 @@
 
     **Since I am reading the error messages using require, they will be cached in the memory and this will prevent unnecessary reads from file system. for more info please read `ClassValidatorTranslatorMiddleware` codes** :star_struck:
 
+    **<span style="color: red">Note if you are using tsc: because we will never ever use fa.json and other json files you have to include this unused json files in your `tsconfig.json`/`tsconfig.build.json` file like this (If you do not include your fa.json, en.json, ... files will not be in the compiled version. unless you import them implicitly):<span>**
+
+    ```json
+    {
+        "include": ["src", "src/**/*.json"]
+        // ...
+    }
+    ```
+
     **I client side sends an locale that you do not defined its error-message file in the `class-validator-errors` directory you will get An error in the next error handler middleware. In this case you will get an error that it is instance of `SpecifiedErrorMessageFileNotFound`.**
 
 -   Your frontend have to specify the `accept-language` header in their requests and it should be within the `Locale` enum.
@@ -84,7 +93,9 @@
 
         ```
 
-        ````
+        ```
+
+        ```
 
     -   Here is one example in routing controller
 
