@@ -23,7 +23,8 @@ export class ClassValidatorTranslatorMiddleware {
     ) {
         if ('errors' in error) {
             if (
-                error.errors.filter(
+                !Array.isArray(error.errors) ||
+                error.errors?.filter(
                     (error: any) =>
                         !(error instanceof ValidationError),
                 ).length > 0
