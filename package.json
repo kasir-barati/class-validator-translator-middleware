@@ -1,6 +1,6 @@
 {
     "name": "class-validator-translator-middleware",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "A middleware to convert class-validator messages to locale languages using similar i18n pattern",
     "main": "dist/index.js",
     "scripts": {
