@@ -1,6 +1,6 @@
 {
     "name": "class-validator-translator-middleware",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "A middleware to convert class-validator messages to locale languages using similar i18n pattern",
     "main": "dist/index.js",
     "scripts": {
@@ -18,7 +18,7 @@
         "multi language",
         "i18n"
     ],
-    "author": "nodejsdeveloperskh",
+    "author": "kasir-barati",
     "license": "GPL-3.0",
     "devDependencies": {
         "@babel/core": "^7.16.5",
@@ -52,7 +52,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/nodejsdeveloperskh/class-validator-translator-middleware"
+        "url": "https://github.com/kasir-barati/class-validator-translator-middleware"
     },
     "types": "./dist/index.d.ts",
     "typings": "dist/index.d.ts",
